@@ -1,0 +1,49 @@
+@import "./responsives.scss";
+
+@mixin SizeLarge {
+  font-size: 30px;
+
+  @include Phone {
+    font-size: 15px;
+  }
+
+  @include Tablet {
+    font-size: 20px;
+  }
+
+  @include Laptop {
+    font-size: 28px;
+  }
+}
+
+@mixin SizeNormal {
+  font-size: 22px;
+
+  @include Phone {
+    font-size: 11px;
+  }
+
+  @include Tablet {
+    font-size: 15px;
+  }
+
+  @include Laptop {
+    font-size: 18px;
+  }
+}
+
+@mixin SizeSmall {
+  font-size: 18px;
+
+  @include Phone {
+    font-size: 8px;
+  }
+
+  @include Tablet {
+    font-size: 11px;
+  }
+
+  @include Laptop {
+    font-size: 14px;
+  }
+}

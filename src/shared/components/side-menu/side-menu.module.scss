@@ -1,0 +1,15 @@
+@import "../../styles/mixins/colors.scss";
+@import "../../styles/mixins/fonts.scss";
+
+.nav{
+    max-width: 300px;
+    height: 100%;
+    min-height: 100vh;
+    padding: 1rem 0.5rem;
+    background-color: $green-color;
+    @include SizeSmall;
+}
+
+.active{
+    color: $blue-color;
+}
