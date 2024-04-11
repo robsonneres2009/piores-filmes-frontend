@@ -20,8 +20,13 @@ Chakra UI
 React.js
 Sass (Module)
 
-🚀 **Architeture:**
-🏛 Is architecture is modular, thinking that this project is improved and will have to create new modules with Artist or Theme
+🚀 Architecture:
+
+🏛 The architecture is modular, considering that this project will be expanded and new modules with Artist or Theme will need to be created.
+
+The App folder contains the page routes and layouts.
+The Shared folder contains components, styles, and resources shared throughout the project.
+The Modules folder is where project modules are created, allowing you to easily copy the folder and use it in other projects.
 
 🚀 **Live:**
 https://live.com.br

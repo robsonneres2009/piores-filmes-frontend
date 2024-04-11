@@ -1,9 +1,12 @@
 import ListScreen from "@/modules/movies/screens/list";
+import { Suspense } from "react";
 
-export default function List() {
+export default async function List() {
   return (
     <main>
-      <ListScreen />
+      <Suspense>
+        <ListScreen />
+      </Suspense>
     </main>
   );
 }
