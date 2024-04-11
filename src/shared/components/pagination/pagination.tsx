@@ -10,6 +10,7 @@ interface PaginationProps {
 export default function Pagination({ limit, selectedPage }: PaginationProps) {
   const renderBreadCrumb = () => {
     const breadcrumbs = [];
+    selectedPage = selectedPage < 0 ? 0 : selectedPage;
 
     for (let index = 0; index < limit; index++) {
       const element = index + 1;

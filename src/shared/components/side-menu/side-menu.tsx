@@ -1,30 +1,27 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import Styles from "./side-menu.module.scss";
 
 export default function SideMenu() {
   const pathname = usePathname();
+  const [isOpen, setOpen] = useState(true);
 
   return (
-    <nav className={Styles.nav}>
-      <ul>
-        <li>
-          <Link href="/" className={`${pathname === "/" ? Styles.active : ""}`}>
-            Dashboard
-          </Link>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <Link
-            href="/list"
-            className={`${pathname === "/list" ? Styles.active : ""}`}
-          >
-            List
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    isOpen && (
+      <nav className={Styles.nav}>
+        <Link href="/" className={`${pathname === "/" ? Styles.active : ""}`}>
+          Dashboard
+        </Link>
+
+        <Link
+          href="/list"
+          className={`${pathname === "/list" ? Styles.active : ""}`}
+        >
+          List
+        </Link>
+      </nav>
+    )
   );
 }

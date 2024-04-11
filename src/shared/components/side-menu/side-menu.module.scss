@@ -5,9 +5,15 @@
     max-width: 300px;
     height: 100%;
     min-height: 100vh;
-    padding: 1rem 0.5rem;
+    padding: 1rem 2rem;
     background-color: $green-color;
     @include SizeSmall;
+
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 5px;
 }
 
 .active{

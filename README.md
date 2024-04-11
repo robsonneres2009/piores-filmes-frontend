@@ -29,6 +29,4 @@ The Shared folder contains components, styles, and resources shared throughout t
 The Modules folder is where project modules are created, allowing you to easily copy the folder and use it in other projects.
 
 🚀 **Live:**
-https://live.com.br
-
-Isso adiciona ícones e destaque ao texto para melhor legibilidade e organização.
+https://piores-filmes-frontend.vercel.app/
