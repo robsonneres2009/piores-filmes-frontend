@@ -21,7 +21,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           variant="outline"
           onClick={() => onSearch(wordSearch)}
         >
-          ?
+          Search
         </Button>
       </InputRightElement>
     </InputGroup>

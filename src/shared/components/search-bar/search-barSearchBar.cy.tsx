@@ -23,7 +23,7 @@ describe("<SearchBar />", () => {
     cy.get("input").type("2023");
 
     // Clique no botão de pesquisa
-    cy.contains("button", "?").click();
+    cy.contains("button", "Search").click();
 
     // Verifique se a função onSearch foi chamada com o valor correto
     cy.get("@onSearch").should("have.been.calledWith", "2023");
