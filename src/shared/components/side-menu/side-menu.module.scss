@@ -1,5 +1,6 @@
 @import "../../styles/mixins/colors.scss";
 @import "../../styles/mixins/fonts.scss";
+@import "../../styles/mixins/responsives.scss";
 
 .nav{
     max-width: 300px;
@@ -14,6 +15,15 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 5px;
+
+    @include Tablet{
+        max-width: 100%;
+        min-height: 50px;
+    }
+
+    > a{
+        font-size: 18px;
+    }
 }
 
 .active{

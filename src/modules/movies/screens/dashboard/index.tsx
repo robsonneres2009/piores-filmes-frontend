@@ -11,10 +11,12 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
+import Styles from "./index.module.scss";
+
 export default function DashBoardScreen() {
   return (
     <>
-      <Grid templateColumns="repeat(2, 1fr)" gap={6} padding={6}>
+      <Grid gap={6} padding={6} className={Styles.container}>
         <GridItem w="100%">
           <Card>
             <CardHeader>

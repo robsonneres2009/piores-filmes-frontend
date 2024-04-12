@@ -7,6 +7,9 @@ import {
   CardFooter,
   CardHeader,
   Heading,
+  Input,
+  Select,
+  SimpleGrid,
   Table,
   TableContainer,
   Tbody,
@@ -14,6 +17,8 @@ import {
   Th,
   Thead,
   Tr,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -25,21 +30,43 @@ interface ItemMoviesProps {
   winner: string;
 }
 
+interface GetMoviesProps {
+  pageNumber: number;
+  year?: string;
+  winner?: string;
+}
+
 export default function ListScreen() {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(0);
+  const [filterYear, setFilterYear] = useState("");
+  const [filterWinner, setFilterWinner] = useState("");
+
   const [limitPage, setLimitPage] = useState(0);
   const searchParams = useSearchParams();
   const pageParam = Number(searchParams.get("page"));
 
   const handlerGetMovies = useCallback(
-    (pageNumber: number) => {
-      const isAvaibleToRequest =
+    ({ pageNumber, year, winner }: GetMoviesProps) => {
+      const isAvaibleToRequestByPage =
         (pageParam && pageParam - 1 === pageNumber) ||
         (!pageParam && pageNumber !== -1);
 
-      if (isAvaibleToRequest) {
-        fetch(`${API.MOVIES}?page=${pageNumber}&size=15&winner=true`)
+      const isAvaibleToRequestByYear =
+        (year && year === filterYear) || (!year && filterYear == "");
+
+      const isAvaibleToRequestByWinner = winner || (!winner && winner !== "");
+
+      if (
+        isAvaibleToRequestByPage ||
+        isAvaibleToRequestByYear ||
+        isAvaibleToRequestByWinner
+      ) {
+        fetch(
+          `${API.MOVIES}?page=${pageNumber < 0 ? 0 : pageNumber}&size=15${
+            winner ? "&winner=" + winner : ""
+          }${filterYear ? "&year=" + filterYear : ""}`
+        )
           .then((response) => response.json())
           .then((data) => {
             setMovies(data?.content);
@@ -47,11 +74,10 @@ export default function ListScreen() {
           })
           .catch((error) => {
             setMovies([]);
-            console.error("Ocorreu um erro:", error);
           });
       }
     },
-    [pageParam]
+    [pageParam, filterYear]
   );
 
   useEffect(() => {
@@ -61,8 +87,17 @@ export default function ListScreen() {
   }, [pageParam]);
 
   useEffect(() => {
-    handlerGetMovies(page);
+    handlerGetMovies({ pageNumber: page });
   }, [page]);
+
+  useEffect(() => {
+    if (filterWinner !== null) {
+      handlerGetMovies({
+        pageNumber: page,
+        winner: filterWinner,
+      });
+    }
+  }, [filterWinner]);
 
   return (
     <>
@@ -76,9 +111,47 @@ export default function ListScreen() {
               <Thead>
                 <Tr>
                   <Th>Id</Th>
-                  <Th>Year</Th>
+                  <Th>
+                    <Wrap>
+                      <SimpleGrid columns={1} spacing={2}>
+                        <WrapItem>Year</WrapItem>
+                        <WrapItem>
+                          <Input
+                            placeholder="Filter by year"
+                            value={filterYear}
+                            onChange={(e) => setFilterYear(e.target.value)}
+                            onBlur={(e) =>
+                              handlerGetMovies({
+                                pageNumber: page,
+                                year: e.target.value,
+                              })
+                            }
+                          />
+                        </WrapItem>
+                      </SimpleGrid>
+                    </Wrap>
+                  </Th>
                   <Th>Title</Th>
-                  <Th>Winner?</Th>
+                  <Th>
+                    <Wrap>
+                      <SimpleGrid columns={1} spacing={2}>
+                        <WrapItem>Winner?</WrapItem>
+                        <WrapItem>
+                          <Select
+                            placeholder="Yes/No"
+                            value={filterWinner}
+                            onChange={(e) => {
+                              console.log("teste: ", e.target.value);
+                              setFilterWinner(e.target.value);
+                            }}
+                          >
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                          </Select>
+                        </WrapItem>
+                      </SimpleGrid>
+                    </Wrap>
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
