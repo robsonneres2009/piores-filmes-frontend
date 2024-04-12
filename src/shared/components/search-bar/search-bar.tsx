@@ -15,7 +15,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         value={wordSearch}
         onChange={(e) => setWordSearch(e.target.value)}
       />
-      <InputRightElement>
+      <InputRightElement width={90}>
         <Button
           colorScheme="teal"
           variant="outline"

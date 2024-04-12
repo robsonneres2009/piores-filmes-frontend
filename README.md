@@ -55,3 +55,6 @@ The Cypress in outside src, where is the test E2E.
 
 🚀 **Live:**
 https://piores-filmes-frontend.vercel.app/
+
+OBS:
+File .env is found in Github, but not recommend. But to test this application local is more easy that it.
