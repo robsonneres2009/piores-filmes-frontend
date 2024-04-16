@@ -84,7 +84,7 @@ export default function ListScreen() {
 
     const newUrl = `${pathname}?${params.toString()}`;
 
-    router.push(newUrl, undefined, { shallow: true });
+    router.push(newUrl, undefined);
   };
 
   useEffect(() => {
