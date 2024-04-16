@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run:e2e": "cypress run",
+    "cypress:run:unit": "cypress run --component"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",

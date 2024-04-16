@@ -14,13 +14,24 @@ bun dev
 
 To run test E2E in terminal:
 
-npm run cypress:run
+npm run cypress:run:e2e
 # or
-yarn cypress:run
+yarn cypress:run:e2e
 # or
-pnpm cypress:run
+pnpm cypress:run:e2e
 # or
-bun cypress:run
+bun cypress:run:e2e
+
+
+To run test UNIT in terminal:
+
+npm run cypress:run:unit
+# or
+yarn cypress:run:unit
+# or
+pnpm cypress:run:unit
+# or
+bun cypress:run:unit
 
 
 To run test in browser:

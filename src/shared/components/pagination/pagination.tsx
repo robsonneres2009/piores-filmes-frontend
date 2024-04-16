@@ -1,6 +1,7 @@
 "use client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
 import Styles from "./pagination.module.scss";
+import { useSearchParams } from "next/navigation";
 
 interface PaginationProps {
   limit: number;
@@ -8,6 +9,11 @@ interface PaginationProps {
 }
 
 export default function Pagination({ limit, selectedPage }: PaginationProps) {
+  const searchParams = useSearchParams();
+
+  const yearParam = searchParams?.get("year");
+  const winnerParam = searchParams?.get("winner");
+
   const renderBreadCrumb = () => {
     const breadcrumbs = [];
     selectedPage = selectedPage < 0 ? 0 : selectedPage;
@@ -18,7 +24,11 @@ export default function Pagination({ limit, selectedPage }: PaginationProps) {
 
       breadcrumbs.push(
         <BreadcrumbItem key={element} isCurrentPage={isActive}>
-          <BreadcrumbLink href={`?page=${element}`}>
+          <BreadcrumbLink
+            href={`?page=${element}${yearParam ? `&year=${yearParam}` : ""}${
+              winnerParam ? `&winner=${winnerParam}` : ""
+            }`}
+          >
             <div className={isActive ? Styles.isActive : ""}>{element}</div>
           </BreadcrumbLink>
         </BreadcrumbItem>

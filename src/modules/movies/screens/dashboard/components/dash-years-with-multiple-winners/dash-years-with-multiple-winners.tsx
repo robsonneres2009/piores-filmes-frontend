@@ -23,7 +23,7 @@ export default async function DashYearsWithMultipleWinners() {
         <Table variant="striped" colorScheme="gray">
           <Thead>
             <Tr>
-              <Th>Years</Th>
+              <Th>Year</Th>
               <Th>Win Count</Th>
             </Tr>
           </Thead>

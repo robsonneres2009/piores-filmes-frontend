@@ -1,5 +1,6 @@
 "use client";
 import { API } from "@/shared/api";
+import InputFilter from "@/shared/components/input-filter/input-filter";
 import Pagination from "@/shared/components/pagination/pagination";
 import {
   Card,
@@ -20,8 +21,9 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import fetchMovies from "../../services/api";
 
 interface ItemMoviesProps {
   id: string;
@@ -31,73 +33,96 @@ interface ItemMoviesProps {
 }
 
 interface GetMoviesProps {
-  pageNumber: number;
-  year?: string;
-  winner?: string;
+  _page?: number;
+  _year?: string;
+  _winner?: string;
+}
+
+interface URLParamsProps {
+  _filterYear?: string | null;
+  _filterWinner?: string | null;
 }
 
 export default function ListScreen() {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(0);
-  const [filterYear, setFilterYear] = useState("");
-  const [filterWinner, setFilterWinner] = useState("");
+  const [filterYear, setFilterYear] = useState<null | string>(null);
+  const [filterWinner, setFilterWinner] = useState<null | string>(null);
 
   const [limitPage, setLimitPage] = useState(0);
+
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const pageParam = Number(searchParams.get("page"));
+  const yearParam = searchParams.get("year");
+  const winnerParam = searchParams.get("winner");
 
-  const handlerGetMovies = useCallback(
-    ({ pageNumber, year, winner }: GetMoviesProps) => {
-      const isAvaibleToRequestByPage =
-        (pageParam && pageParam - 1 === pageNumber) ||
-        (!pageParam && pageNumber !== -1);
-
-      const isAvaibleToRequestByYear =
-        (year && year === filterYear) || (!year && filterYear == "");
-
-      const isAvaibleToRequestByWinner = winner || (!winner && winner !== "");
-
-      if (
-        isAvaibleToRequestByPage ||
-        isAvaibleToRequestByYear ||
-        isAvaibleToRequestByWinner
-      ) {
-        fetch(
-          `${API.MOVIES}?page=${pageNumber < 0 ? 0 : pageNumber}&size=15${
-            winner ? "&winner=" + winner : ""
-          }${filterYear ? "&year=" + filterYear : ""}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            setMovies(data?.content);
-            setLimitPage(data?.totalPages);
-          })
-          .catch((error) => {
-            setMovies([]);
-          });
+  const handlerGetMovies = useCallback(() => {
+    const fetchData = async () => {
+      const data = await fetchMovies({ page, filterYear, filterWinner });
+      setMovies(data.content);
+      setLimitPage(data.totalPages);
+      if (page > data.totalPages) {
+        setPage(0);
       }
-    },
-    [pageParam, filterYear]
-  );
+    };
+    fetchData();
+  }, [page, filterYear, filterWinner]);
+
+  const updateUrlParams = ({ _filterYear, _filterWinner }: URLParamsProps) => {
+    const params = new URLSearchParams();
+
+    if (_filterYear) {
+      params.set("year", _filterYear);
+    }
+
+    if (_filterWinner) {
+      params.set("winner", _filterWinner);
+    }
+
+    const newUrl = `${pathname}?${params.toString()}`;
+
+    router.push(newUrl, undefined, { shallow: true });
+  };
 
   useEffect(() => {
-    if (pageParam !== null && Number(page) !== pageParam - 1) {
+    if (pageParam !== null && page !== pageParam - 1) {
       setPage(pageParam - 1);
     }
-  }, [pageParam]);
 
-  useEffect(() => {
-    handlerGetMovies({ pageNumber: page });
-  }, [page]);
-
-  useEffect(() => {
-    if (filterWinner !== null) {
-      handlerGetMovies({
-        pageNumber: page,
-        winner: filterWinner,
-      });
+    if (yearParam !== null) {
+      setFilterYear(yearParam);
     }
-  }, [filterWinner]);
+
+    if (winnerParam !== null) {
+      setFilterWinner(winnerParam);
+    }
+  }, [pageParam, yearParam, winnerParam]);
+
+  useEffect(() => {
+    if (pageParam !== null && page !== pageParam - 1) {
+      setPage(pageParam - 1);
+    }
+
+    if (yearParam !== null) {
+      setFilterYear(yearParam);
+    }
+
+    if (winnerParam !== null) {
+      setFilterWinner(winnerParam);
+    }
+
+    if (pageParam == 1 && yearParam == null && winnerParam == null) {
+      handlerGetMovies();
+    }
+  }, []);
+
+  useEffect(() => {
+    (page !== 0 || filterYear !== null || filterWinner !== null) &&
+      handlerGetMovies();
+  }, [page, filterYear, filterWinner]);
 
   return (
     <>
@@ -116,16 +141,13 @@ export default function ListScreen() {
                       <SimpleGrid columns={1} spacing={2}>
                         <WrapItem>Year</WrapItem>
                         <WrapItem>
-                          <Input
-                            placeholder="Filter by year"
-                            value={filterYear}
-                            onChange={(e) => setFilterYear(e.target.value)}
-                            onBlur={(e) =>
-                              handlerGetMovies({
-                                pageNumber: page,
-                                year: e.target.value,
-                              })
-                            }
+                          <InputFilter
+                            title="Filter by year"
+                            defaultValue={filterYear}
+                            onClick={(value: string) => {
+                              setFilterYear(value);
+                              updateUrlParams({ _filterYear: value });
+                            }}
                           />
                         </WrapItem>
                       </SimpleGrid>
@@ -137,17 +159,18 @@ export default function ListScreen() {
                       <SimpleGrid columns={1} spacing={2}>
                         <WrapItem>Winner?</WrapItem>
                         <WrapItem>
-                          <Select
-                            placeholder="Yes/No"
-                            value={filterWinner}
-                            onChange={(e) => {
-                              console.log("teste: ", e.target.value);
-                              setFilterWinner(e.target.value);
+                          <InputFilter
+                            title="Yes/No"
+                            defaultValue={filterWinner}
+                            onClick={(value: string) => {
+                              setFilterWinner(value);
+                              updateUrlParams({ _filterWinner: value });
                             }}
-                          >
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </Select>
+                            options={[
+                              { value: true, title: "Yes" },
+                              { value: false, title: "No" },
+                            ]}
+                          />
                         </WrapItem>
                       </SimpleGrid>
                     </Wrap>

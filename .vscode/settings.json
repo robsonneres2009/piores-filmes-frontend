@@ -1,5 +1,5 @@
 {
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modificationsIfAvailable"
+    "editor.formatOnSaveMode": "modifications"
 }
